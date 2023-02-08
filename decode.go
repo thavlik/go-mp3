@@ -29,6 +29,7 @@ import (
 type Decoder struct {
 	source        *source
 	sampleRate    int
+	numChannels   int
 	length        int64
 	frameStarts   []int64
 	buf           []byte
@@ -128,6 +129,10 @@ func (d *Decoder) SampleRate() int {
 	return d.sampleRate
 }
 
+func (d *Decoder) NumChannels() int {
+	return d.numChannels
+}
+
 func (d *Decoder) ensureFrameStartsAndLength() error {
 	if d.length != invalidLength {
 		return nil
@@ -222,6 +227,7 @@ func NewDecoder(r io.Reader) (*Decoder, error) {
 		return nil, err
 	}
 	d.sampleRate = freq
+	d.numChannels = d.frame.NumberOfChannels()
 
 	if err := d.ensureFrameStartsAndLength(); err != nil {
 		return nil, err
